@@ -68,7 +68,7 @@
                             <div class="ml-4">
                                 <p class="text-sm font-medium text-gray-500">Avg GPA</p>
                                 <p class="text-2xl font-semibold text-gray-900">
-                                    {{ number_format(\App\Models\Student::with('enrollments.course')->get()->avg('gpa'), 2) }}
+                                    {{ number_format(\App\Models\Student::with('enrollments.course')->get()->map(function($student) { return $student->calculateGPA(); })->avg(), 2) }}
                                 </p>
                             </div>
                         </div>

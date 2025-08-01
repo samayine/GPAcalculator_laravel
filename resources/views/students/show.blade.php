@@ -9,6 +9,12 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
+                    @if(session('success'))
+                        <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-medium">Student Details</h3>
                         <div class="space-x-2">
@@ -69,6 +75,7 @@
                                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Letter Grade</th>
                                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grade Points</th>
                                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quality Points</th>
+                                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody class="bg-white divide-y divide-gray-200">
@@ -84,12 +91,20 @@
                                                         </td>
                                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $enrollment->grade_point }}</td>
                                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ number_format($enrollment->course->credit_hours * $enrollment->grade_point, 2) }}</td>
+                                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                                            <a href="{{ route('enrollments.edit', $enrollment) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                                                            <form action="{{ route('enrollments.destroy', $enrollment) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this enrollment? This action cannot be undone.');">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
+                                                            </form>
+                                                        </td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
                                             <tfoot class="bg-gray-100">
                                                 <tr>
-                                                    <td colspan="5" class="px-6 py-4 text-sm font-medium text-gray-900">Total</td>
+                                                    <td colspan="6" class="px-6 py-4 text-sm font-medium text-gray-900">Total</td>
                                                     <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ number_format($student->enrollments->sum(function($e) { return $e->course->credit_hours * $e->grade_point; }), 2) }}</td>
                                                 </tr>
                                             </tfoot>
